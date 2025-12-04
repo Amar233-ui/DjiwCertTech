@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import 'package:animate_do/animate_do.dart';
@@ -6,7 +6,7 @@ import '../../config/theme.dart';
 import '../../models/product_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../widgets/custom_button.dart';
-import '../orders/cart_screen.dart';
+import '../screens/orders/cart_screen.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final ProductModel product;
@@ -280,7 +280,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       ),
                                     ),
                                     IconButton(
-                                      onPressed: _quantity < widget.product.stock
+                                      onPressed: _quantity <
+                                              widget.product.stock
                                           ? () => setState(() => _quantity++)
                                           : null,
                                       icon: const Icon(Icons.add),
@@ -381,7 +382,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
+      ),
+    );
+  }
 }

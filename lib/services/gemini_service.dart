@@ -1,4 +1,4 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../config/constants.dart';
 
@@ -99,5 +99,5 @@ Sois concis et pratique (max 150 mots).
 ''';
 
     return await sendMessage(message, context: weatherContext);
-  }
+  }
 }

@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+﻿import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum OrderStatus {
   pending,
@@ -120,6 +120,6 @@ class OrderModel {
         return 'Livrée';
       case OrderStatus.cancelled:
         return 'Annulée';
-    }
-  }
+    }
+  }
 }

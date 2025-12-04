@@ -1,4 +1,4 @@
-class AppConstants {
+﻿class AppConstants {
   // API Keys (à remplacer par vos clés)
   static const String openWeatherApiKey = 'VOTRE_CLE_OPENWEATHER';
   static const String geminiApiKey = 'VOTRE_CLE_GEMINI';
@@ -21,3 +21,4 @@ class AppConstants {
   static const String onboardingKey = 'onboarding_complete';
   static const String locationKey = 'user_location';
 }
+

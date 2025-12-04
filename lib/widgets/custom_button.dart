@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../config/theme.dart';
 
 class CustomButton extends StatelessWidget {
@@ -100,7 +100,7 @@ class CustomButton extends StatelessWidget {
         color: color,
         fontSize: 16,
         fontWeight: FontWeight.w600,
-      ),
-    );
-  }
+      ),
+    );
+  }
 }

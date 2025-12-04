@@ -1,4 +1,4 @@
-class CurrentWeather {
+﻿class CurrentWeather {
   final double temp;
   final double feelsLike;
   final int humidity;
@@ -240,5 +240,5 @@ class WeatherData {
     this.alerts = const [],
     required this.cityName,
     required this.country,
-  });
+  });
 }

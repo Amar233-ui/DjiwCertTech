@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:animate_do/animate_do.dart';
 import '../../config/theme.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/weather_provider.dart';
-import '../catalog/catalog_screen.dart';
+import '../../catalog/catalog_screen.dart';
 import '../orders/cart_screen.dart';
 import '../orders/orders_screen.dart';
 import '../weather/weather_screen.dart';
@@ -65,10 +65,13 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildNavItem(0, Icons.home_outlined, Icons.home, 'Accueil'),
-                _buildNavItem(1, Icons.shopping_bag_outlined, Icons.shopping_bag, 'Catalogue'),
+                _buildNavItem(1, Icons.shopping_bag_outlined,
+                    Icons.shopping_bag, 'Catalogue'),
                 _buildNavItem(2, Icons.cloud_outlined, Icons.cloud, 'Meteo'),
-                _buildNavItem(3, Icons.chat_bubble_outline, Icons.chat_bubble, 'Assistant'),
-                _buildNavItem(4, Icons.school_outlined, Icons.school, 'Formation'),
+                _buildNavItem(3, Icons.chat_bubble_outline, Icons.chat_bubble,
+                    'Assistant'),
+                _buildNavItem(
+                    4, Icons.school_outlined, Icons.school, 'Formation'),
               ],
             ),
           ),
@@ -77,7 +80,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, IconData activeIcon, String label) {
+  Widget _buildNavItem(
+      int index, IconData icon, IconData activeIcon, String label) {
     final isActive = _currentIndex == index;
     return GestureDetector(
       onTap: () => setState(() => _currentIndex = index),
@@ -85,7 +89,9 @@ class _HomeScreenState extends State<HomeScreen> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isActive ? AppTheme.primaryGreen.withOpacity(0.1) : Colors.transparent,
+          color: isActive
+              ? AppTheme.primaryGreen.withOpacity(0.1)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -100,7 +106,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Text(
               label,
               style: TextStyle(
-                color: isActive ? AppTheme.primaryGreen : AppTheme.textSecondary,
+                color:
+                    isActive ? AppTheme.primaryGreen : AppTheme.textSecondary,
                 fontSize: 10,
                 fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
               ),
@@ -338,7 +345,8 @@ class _HomeContent extends StatelessWidget {
               delay: const Duration(milliseconds: 500),
               child: Consumer<WeatherProvider>(
                 builder: (context, weather, child) {
-                  if (weather.aiAnalysis == null) return const SizedBox.shrink();
+                  if (weather.aiAnalysis == null)
+                    return const SizedBox.shrink();
                   return Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -596,5 +604,5 @@ extension StringExtension on String {
   String capitalize() {
     if (isEmpty) return this;
     return '${this[0].toUpperCase()}${substring(1)}';
-  }
+  }
 }

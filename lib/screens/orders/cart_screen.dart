@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import 'package:animate_do/animate_do.dart';
@@ -443,7 +443,7 @@ class _SummaryRow extends StatelessWidget {
             fontSize: isBold ? 18 : 14,
           ),
         ),
-      ],
-    );
-  }
+      ],
+    );
+  }
 }

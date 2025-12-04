@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:animate_do/animate_do.dart';
 import '../../config/theme.dart';
@@ -7,7 +7,7 @@ import '../../services/firestore_service.dart';
 import '../../providers/cart_provider.dart';
 import '../../widgets/product_card.dart';
 import '../../widgets/loading_widget.dart';
-import '../orders/cart_screen.dart';
+import '../screens/orders/cart_screen.dart';
 import 'product_detail_screen.dart';
 
 class CatalogScreen extends StatefulWidget {
@@ -40,11 +40,13 @@ class _CatalogScreenState extends State<CatalogScreen> {
 
   List<ProductModel> _filterProducts(List<ProductModel> products) {
     return products.where((product) {
-      final matchesCategory = _selectedCategory == 'Tous' ||
-          product.category == _selectedCategory;
+      final matchesCategory =
+          _selectedCategory == 'Tous' || product.category == _selectedCategory;
       final matchesSearch = _searchQuery.isEmpty ||
           product.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          product.description.toLowerCase().contains(_searchQuery.toLowerCase());
+          product.description
+              .toLowerCase()
+              .contains(_searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     }).toList();
   }
@@ -82,7 +84,8 @@ class _CatalogScreenState extends State<CatalogScreen> {
                                   onPressed: () {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) => const CartScreen(),
+                                        builder: (context) =>
+                                            const CartScreen(),
                                       ),
                                     );
                                   },
@@ -283,7 +286,8 @@ class _CatalogScreenState extends State<CatalogScreen> {
                   return FadeInUp(
                     child: GridView.builder(
                       padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         childAspectRatio: 0.7,
                         crossAxisSpacing: 16,
@@ -311,7 +315,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
+      ),
+    );
+  }
 }

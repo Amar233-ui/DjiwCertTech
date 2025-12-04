@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../config/theme.dart';
 
 class LoadingWidget extends StatelessWidget {
@@ -99,7 +99,7 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
             ),
           ),
         );
-      },
-    );
-  }
+      },
+    );
+  }
 }

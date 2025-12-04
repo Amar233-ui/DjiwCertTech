@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Helpers {
@@ -65,6 +65,6 @@ class Helpers {
     if (phone.length >= 10) {
       return '${phone.substring(0, 3)} ${phone.substring(3, 5)} ${phone.substring(5, 7)} ${phone.substring(7, 9)} ${phone.substring(9)}';
     }
-    return phone;
-  }
+    return phone;
+  }
 }

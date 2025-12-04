@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../models/product_model.dart';
 import '../models/order_model.dart';
 
@@ -85,5 +85,5 @@ class CartProvider with ChangeNotifier {
 
   bool isInCart(String productId) => _items.containsKey(productId);
   
-  int getQuantity(String productId) => _items[productId]?.quantity ?? 0;
+  int getQuantity(String productId) => _items[productId]?.quantity ?? 0;
 }

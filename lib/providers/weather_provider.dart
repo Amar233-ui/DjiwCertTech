@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import '../models/weather_model.dart';
 import '../services/weather_service.dart';
@@ -89,5 +89,5 @@ class WeatherProvider with ChangeNotifier {
 
   String getWeatherIconUrl(String iconCode) {
     return _weatherService.getIconUrl(iconCode);
-  }
+  }
 }

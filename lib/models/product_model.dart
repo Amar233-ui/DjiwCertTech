@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+﻿import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductModel {
   final String id;
@@ -48,6 +48,6 @@ class ProductModel {
       'stock': stock,
       'isAvailable': isAvailable,
       'createdAt': Timestamp.fromDate(createdAt),
-    };
-  }
+    };
+  }
 }

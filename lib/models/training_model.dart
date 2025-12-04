@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+﻿import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TrainingModel {
   final String id;
@@ -48,6 +48,6 @@ class TrainingModel {
       'category': category,
       'duration': duration,
       'createdAt': Timestamp.fromDate(createdAt),
-    };
-  }
+    };
+  }
 }

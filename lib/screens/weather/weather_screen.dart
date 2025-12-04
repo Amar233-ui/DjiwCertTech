@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -47,7 +47,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 children: [
                   // Header with current weather
                   _buildCurrentWeather(weather),
-                  
+
                   // Content
                   Container(
                     decoration: const BoxDecoration(
@@ -66,33 +66,35 @@ class _WeatherScreenState extends State<WeatherScreen> {
                             child: _buildWeatherDetails(weather),
                           ),
                           const SizedBox(height: 24),
-                          
+
                           // 5-day forecast
                           FadeInUp(
                             delay: const Duration(milliseconds: 100),
                             child: _buildForecast(weather),
                           ),
                           const SizedBox(height: 24),
-                          
+
                           // Temperature chart
                           FadeInUp(
                             delay: const Duration(milliseconds: 200),
                             child: _buildTemperatureChart(weather),
                           ),
                           const SizedBox(height: 24),
-                          
+
                           // Air quality
                           if (weather.weatherData!.airPollution != null)
                             FadeInUp(
                               delay: const Duration(milliseconds: 300),
                               child: AirQualityCard(
                                 aqi: weather.weatherData!.airPollution!.aqi,
-                                status: weather.weatherData!.airPollution!.aqiText,
-                                advice: weather.weatherData!.airPollution!.healthAdvice,
+                                status:
+                                    weather.weatherData!.airPollution!.aqiText,
+                                advice: weather
+                                    .weatherData!.airPollution!.healthAdvice,
                               ),
                             ),
                           const SizedBox(height: 24),
-                          
+
                           // UV Index
                           if (weather.weatherData!.uvIndex != null)
                             FadeInUp(
@@ -100,14 +102,14 @@ class _WeatherScreenState extends State<WeatherScreen> {
                               child: _buildUVIndex(weather),
                             ),
                           const SizedBox(height: 24),
-                          
+
                           // AI Analysis
                           if (weather.aiAnalysis != null)
                             FadeInUp(
                               delay: const Duration(milliseconds: 500),
                               child: _buildAIAnalysis(weather),
                             ),
-                          
+
                           // Weather alerts
                           if (weather.weatherData!.alerts.isNotEmpty) ...[
                             const SizedBox(height: 24),
@@ -116,7 +118,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                               child: _buildAlerts(weather),
                             ),
                           ],
-                          
+
                           const SizedBox(height: 20),
                         ],
                       ),
@@ -204,7 +206,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          DateFormat('EEEE, d MMMM', 'fr_FR').format(DateTime.now()),
+                          DateFormat('EEEE, d MMMM', 'fr_FR')
+                              .format(DateTime.now()),
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.8),
                             fontSize: 14,
@@ -269,7 +272,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
               const SizedBox(height: 8),
               FadeInUp(
                 child: Text(
-                  current.description[0].toUpperCase() + current.description.substring(1),
+                  current.description[0].toUpperCase() +
+                      current.description.substring(1),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 20,
@@ -381,7 +385,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   Widget _buildForecast(WeatherProvider weather) {
     final forecast = weather.weatherData!.forecast;
-    
+
     // Group forecast by day
     final Map<String, List<dynamic>> dailyForecast = {};
     for (var item in forecast) {
@@ -412,11 +416,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
             itemBuilder: (context, index) {
               final day = dailyForecast.keys.elementAt(index);
               final items = dailyForecast[day]!;
-              final avgTemp = items.fold<double>(0, (sum, item) => sum + item.temp) / items.length;
-              final minTemp = items.fold<double>(100, (min, item) => item.tempMin < min ? item.tempMin : min);
-              final maxTemp = items.fold<double>(-100, (max, item) => item.tempMax > max ? item.tempMax : max);
+
+              final minTemp = items.fold<double>(
+                  100, (min, item) => item.tempMin < min ? item.tempMin : min);
+              final maxTemp = items.fold<double>(
+                  -100, (max, item) => item.tempMax > max ? item.tempMax : max);
               final icon = items[items.length ~/ 2].icon;
-              
+
               final date = DateTime.parse(day);
               final dayName = index == 0
                   ? "Auj."
@@ -441,7 +447,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   Widget _buildTemperatureChart(WeatherProvider weather) {
     final forecast = weather.weatherData!.forecast.take(8).toList();
-    
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -506,7 +512,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           return Padding(
                             padding: const EdgeInsets.only(top: 8),
                             child: Text(
-                              DateFormat('HH:mm').format(forecast[value.toInt()].dateTime),
+                              DateFormat('HH:mm')
+                                  .format(forecast[value.toInt()].dateTime),
                               style: const TextStyle(
                                 color: AppTheme.textSecondary,
                                 fontSize: 10,
@@ -518,8 +525,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       },
                     ),
                   ),
-                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
                 ),
                 borderData: FlBorderData(show: false),
                 lineBarsData: [
@@ -558,7 +567,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   Widget _buildUVIndex(WeatherProvider weather) {
     final uv = weather.weatherData!.uvIndex!;
-    
+
     Color uvColor;
     if (uv.value <= 2) {
       uvColor = Colors.green;
@@ -646,11 +655,21 @@ class _WeatherScreenState extends State<WeatherScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: const [
-              Text('0', style: TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
-              Text('3', style: TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
-              Text('6', style: TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
-              Text('9', style: TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
-              Text('11+', style: TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
+              Text('0',
+                  style:
+                      TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
+              Text('3',
+                  style:
+                      TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
+              Text('6',
+                  style:
+                      TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
+              Text('9',
+                  style:
+                      TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
+              Text('11+',
+                  style:
+                      TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
             ],
           ),
           const SizedBox(height: 16),
@@ -824,7 +843,7 @@ class _DetailItem extends StatelessWidget {
             ),
           ],
         ),
-      ],
-    );
-  }
+      ],
+    );
+  }
 }

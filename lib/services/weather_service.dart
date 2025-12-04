@@ -1,4 +1,4 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/weather_model.dart';
 import '../config/constants.dart';
@@ -136,5 +136,5 @@ class WeatherService {
   // Get weather icon URL
   String getIconUrl(String iconCode) {
     return 'https://openweathermap.org/img/wn/$iconCode@4x.png';
-  }
+  }
 }

@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+﻿import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/product_model.dart';
 import '../models/order_model.dart';
 import '../models/training_model.dart';
@@ -121,5 +121,5 @@ class FirestoreService {
         .toList();
     
     return categories;
-  }
+  }
 }

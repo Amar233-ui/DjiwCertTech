@@ -1,4 +1,4 @@
-import 'package:firebase_core/firebase_core.dart';
+﻿import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 
 class FirebaseConfig {
@@ -41,5 +41,5 @@ class FirebaseConfig {
     projectId: 'VOTRE_PROJECT_ID',
     storageBucket: 'VOTRE_STORAGE_BUCKET',
     authDomain: 'VOTRE_AUTH_DOMAIN',
-  );
+  );
 }

@@ -1,4 +1,4 @@
-class MessageModel {
+﻿class MessageModel {
   final String id;
   final String content;
   final bool isUser;
@@ -9,5 +9,5 @@ class MessageModel {
     required this.content,
     required this.isUser,
     required this.timestamp,
-  });
+  });
 }

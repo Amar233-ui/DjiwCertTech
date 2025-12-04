@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../config/theme.dart';
 
 class ChatBubble extends StatelessWidget {
@@ -185,7 +185,7 @@ class _TypingIndicatorState extends State<TypingIndicator>
             }),
           ),
         ),
-      ],
-    );
-  }
+      ],
+    );
+  }
 }

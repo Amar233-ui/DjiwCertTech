@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:animate_do/animate_do.dart';
 import '../../config/theme.dart';
@@ -227,7 +227,7 @@ class TrainingDetailScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
+      ),
+    );
+  }
 }

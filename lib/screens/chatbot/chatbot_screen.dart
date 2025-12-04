@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import '../../config/theme.dart';
 import '../../models/message_model.dart';
 import '../../services/gemini_service.dart';
 import '../../widgets/chat_bubble.dart';
-import '../../widgets/custom_text_field.dart';
 
 class ChatbotScreen extends StatefulWidget {
   const ChatbotScreen({super.key});
@@ -26,7 +25,8 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     // Welcome message
     _messages.add(MessageModel(
       id: '0',
-      content: 'Bonjour ! Je suis votre assistant agricole intelligent. Comment puis-je vous aider aujourd\'hui ?\n\nVous pouvez me poser des questions sur :\n- Les cultures et semences\n- Les techniques agricoles\n- La meteo et son impact\n- Les conseils de saison',
+      content:
+          'Bonjour ! Je suis votre assistant agricole intelligent. Comment puis-je vous aider aujourd\'hui ?\n\nVous pouvez me poser des questions sur :\n- Les cultures et semences\n- Les techniques agricoles\n- La meteo et son impact\n- Les conseils de saison',
       isUser: false,
       timestamp: DateTime.now(),
     ));
@@ -71,7 +71,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     // Get AI response
     try {
       final response = await _geminiService.sendMessage(message);
-      
+
       setState(() {
         _messages.add(MessageModel(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -162,7 +162,8 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                           _messages.clear();
                           _messages.add(MessageModel(
                             id: '0',
-                            content: 'Conversation effacee. Comment puis-je vous aider ?',
+                            content:
+                                'Conversation effacee. Comment puis-je vous aider ?',
                             isUser: false,
                             timestamp: DateTime.now(),
                           ));
@@ -201,7 +202,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
               },
             ),
           ),
-          
+
           // Quick suggestions
           if (_messages.length <= 1)
             FadeInUp(
@@ -214,21 +215,24 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                     _SuggestionChip(
                       label: 'Conseils de plantation',
                       onTap: () {
-                        _messageController.text = 'Quels sont vos conseils pour la plantation en cette saison ?';
+                        _messageController.text =
+                            'Quels sont vos conseils pour la plantation en cette saison ?';
                         _sendMessage();
                       },
                     ),
                     _SuggestionChip(
                       label: 'Proteger mes cultures',
                       onTap: () {
-                        _messageController.text = 'Comment proteger mes cultures des nuisibles ?';
+                        _messageController.text =
+                            'Comment proteger mes cultures des nuisibles ?';
                         _sendMessage();
                       },
                     ),
                     _SuggestionChip(
                       label: 'Ameliorer le sol',
                       onTap: () {
-                        _messageController.text = 'Comment ameliorer la qualite de mon sol ?';
+                        _messageController.text =
+                            'Comment ameliorer la qualite de mon sol ?';
                         _sendMessage();
                       },
                     ),
@@ -236,9 +240,9 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                 ),
               ),
             ),
-          
+
           const SizedBox(height: 8),
-          
+
           // Input field
           Container(
             padding: const EdgeInsets.all(16),
@@ -335,7 +339,7 @@ class _SuggestionChip extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-      ),
-    );
-  }
+      ),
+    );
+  }
 }
