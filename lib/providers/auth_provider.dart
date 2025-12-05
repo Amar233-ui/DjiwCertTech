@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
@@ -119,6 +119,99 @@ class AuthProvider with ChangeNotifier {
 
     _isLoading = false;
     notifyListeners();
+  }
+
+  // Inscription avec email/password
+  Future<bool> signUpWithEmailPassword({
+    required String email,
+    required String password,
+  }) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _authService.signUpWithEmailPassword(
+        email: email,
+        password: password,
+      );
+      await _loadUserData();
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = _getErrorMessage(e);
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  // Connexion avec email/password
+  Future<bool> signInWithEmailPassword({
+    required String email,
+    required String password,
+  }) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _authService.signInWithEmailPassword(
+        email: email,
+        password: password,
+      );
+      await _loadUserData();
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = _getErrorMessage(e);
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  // Réinitialiser le mot de passe
+  Future<bool> resetPassword(String email) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _authService.resetPassword(email);
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = _getErrorMessage(e);
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  String _getErrorMessage(dynamic error) {
+    if (error is FirebaseAuthException) {
+      switch (error.code) {
+        case 'weak-password':
+          return 'Le mot de passe est trop faible';
+        case 'email-already-in-use':
+          return 'Cet email est déjà utilisé';
+        case 'user-not-found':
+          return 'Aucun utilisateur trouvé avec cet email';
+        case 'wrong-password':
+          return 'Mot de passe incorrect';
+        case 'invalid-email':
+          return 'Email invalide';
+        case 'too-many-requests':
+          return 'Trop de tentatives. Veuillez réessayer plus tard';
+        default:
+          return error.message ?? 'Une erreur est survenue';
+      }
+    }
+    return error.toString();
   }
 
   Future<void> signOut() async {

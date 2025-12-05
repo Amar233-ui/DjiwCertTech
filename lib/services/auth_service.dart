@@ -1,5 +1,6 @@
-﻿import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import '../models/user_model.dart';
 import '../config/constants.dart';
 
@@ -21,7 +22,11 @@ class AuthService {
     await _auth.verifyPhoneNumber(
       phoneNumber: phoneNumber,
       verificationCompleted: onVerificationCompleted,
-      verificationFailed: onVerificationFailed,
+      verificationFailed: (e) {
+        // Log détaillé pour comprendre les échecs reCAPTCHA / SMS
+        debugPrint('verifyPhoneNumber error: ${e.code} - ${e.message}');
+        onVerificationFailed(e);
+      },
       codeSent: onCodeSent,
       codeAutoRetrievalTimeout: onCodeAutoRetrievalTimeout,
       timeout: const Duration(seconds: 60),
@@ -93,6 +98,39 @@ class AuthService {
         .collection(AppConstants.usersCollection)
         .doc(currentUser!.uid)
         .update(updates);
+  }
+
+  // Inscription avec email/password
+  Future<UserCredential> signUpWithEmailPassword({
+    required String email,
+    required String password,
+  }) async {
+    final userCredential = await _auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    
+    if (userCredential.user != null) {
+      await createOrUpdateUser(userCredential.user!);
+    }
+    
+    return userCredential;
+  }
+
+  // Connexion avec email/password
+  Future<UserCredential> signInWithEmailPassword({
+    required String email,
+    required String password,
+  }) async {
+    return await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+  }
+
+  // Réinitialiser le mot de passe
+  Future<void> resetPassword(String email) async {
+    await _auth.sendPasswordResetEmail(email: email);
   }
 
   // Déconnexion

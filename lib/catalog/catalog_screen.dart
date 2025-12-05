@@ -1,13 +1,17 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:animate_do/animate_do.dart';
 import '../../config/theme.dart';
 import '../../models/product_model.dart';
 import '../../services/firestore_service.dart';
 import '../../providers/cart_provider.dart';
+import '../../providers/auth_provider.dart';
 import '../../widgets/product_card.dart';
 import '../../widgets/loading_widget.dart';
 import '../screens/orders/cart_screen.dart';
+import '../screens/training/training_screen.dart';
+import '../screens/orders/orders_screen.dart';
+import '../screens/auth/login_screen.dart';
 import 'product_detail_screen.dart';
 
 class CatalogScreen extends StatefulWidget {
@@ -53,7 +57,17 @@ class _CatalogScreenState extends State<CatalogScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    
     return Scaffold(
+      drawer: _buildDrawer(context, authProvider),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () => Scaffold.of(context).openDrawer(),
+        ),
+        title: const Text('Catalogue'),
+      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -191,8 +205,8 @@ class _CatalogScreenState extends State<CatalogScreen> {
                             child: Container(
                               margin: const EdgeInsets.only(right: 12),
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 10,
+                                horizontal: 16,
+                                vertical: 8,
                               ),
                               decoration: BoxDecoration(
                                 color: isSelected
@@ -284,34 +298,179 @@ class _CatalogScreenState extends State<CatalogScreen> {
                   }
 
                   return FadeInUp(
-                    child: GridView.builder(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.7,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                      ),
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       itemCount: products.length,
                       itemBuilder: (context, index) {
-                        return ProductCard(
-                          product: products[index],
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => ProductDetailScreen(
-                                  product: products[index],
-                                ),
-                              ),
-                            );
-                          },
+                        return Center(
+                          child: Container(
+                            constraints: const BoxConstraints(maxWidth: 400),
+                            margin: const EdgeInsets.only(bottom: 20),
+                            child: ProductCard(
+                              product: products[index],
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => ProductDetailScreen(
+                                      product: products[index],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                         );
                       },
                     ),
                   );
                 },
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDrawer(BuildContext context, AuthProvider authProvider) {
+    return Drawer(
+      child: SafeArea(
+        child: Column(
+          children: [
+            // Header du drawer
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(24),
+              decoration: const BoxDecoration(
+                gradient: AppTheme.primaryGradient,
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Icon(
+                      Icons.eco,
+                      size: 40,
+                      color: AppTheme.primaryGreen,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'DjiwCertTech',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Menu items
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.inventory_2_outlined, color: AppTheme.primaryGreen),
+                    title: const Text(
+                      'Catalogue',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: AppTheme.textPrimary,
+                      ),
+                    ),
+                    selected: true,
+                    selectedTileColor: AppTheme.primaryGreen.withOpacity(0.1),
+                    onTap: () => Navigator.pop(context),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.school_outlined, color: AppTheme.primaryGreen),
+                    title: const Text(
+                      'Formation',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: AppTheme.textPrimary,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const TrainingScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  if (authProvider.isAuthenticated)
+                    ListTile(
+                      leading: const Icon(Icons.receipt_long_outlined, color: AppTheme.primaryGreen),
+                      title: const Text(
+                        'Mes Commandes',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: AppTheme.textPrimary,
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const OrdersScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                ],
+              ),
+            ),
+            // Footer avec bouton connexion
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: authProvider.isAuthenticated
+                  ? ElevatedButton(
+                      onPressed: () {
+                        authProvider.signOut();
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: AppTheme.primaryGreen,
+                        side: const BorderSide(color: AppTheme.primaryGreen, width: 2),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        minimumSize: const Size(double.infinity, 50),
+                      ),
+                      child: const Text('Se déconnecter'),
+                    )
+                  : ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const LoginScreen(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.primaryGreen,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        minimumSize: const Size(double.infinity, 50),
+                      ),
+                      child: const Text('Se connecter'),
+                    ),
             ),
           ],
         ),

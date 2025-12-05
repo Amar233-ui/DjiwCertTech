@@ -16,30 +16,33 @@ class FirebaseConfig {
     }
   }
 
-  // Remplacez par vos propres configurations Firebase
+  // ANDROID
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'VOTRE_API_KEY',
-    appId: 'VOTRE_APP_ID',
-    messagingSenderId: 'VOTRE_SENDER_ID',
-    projectId: 'VOTRE_PROJECT_ID',
-    storageBucket: 'VOTRE_STORAGE_BUCKET',
+    apiKey: 'AIzaSyCBOqGuAQ4rWc5kur91-vm88u_9TnQX6N4',
+    appId: '1:258048048672:android:c79a8bfcf53449c6f24645',
+    messagingSenderId: '258048048672',
+    projectId: 'djiwcerttech-606cd',
+    storageBucket: 'djiwcerttech-606cd.appspot.com',
   );
 
+  // IOS
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'VOTRE_API_KEY',
-    appId: 'VOTRE_APP_ID',
-    messagingSenderId: 'VOTRE_SENDER_ID',
-    projectId: 'VOTRE_PROJECT_ID',
-    storageBucket: 'VOTRE_STORAGE_BUCKET',
-    iosBundleId: 'com.example.agriApp',
+    apiKey: 'AIzaSyDaW1ssGB6Aif0DgbyUFipMvQ8WnaMpPro',
+    appId: '1:258048048672:ios:a4a722a78033eb8ef24645',
+    messagingSenderId: '258048048672',
+    projectId: 'djiwcerttech-606cd',
+    storageBucket: 'djiwcerttech-606cd.appspot.com',
+    iosBundleId: 'com.mondomaine.djiw',
   );
 
+  // WEB
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'VOTRE_API_KEY',
-    appId: 'VOTRE_APP_ID',
-    messagingSenderId: 'VOTRE_SENDER_ID',
-    projectId: 'VOTRE_PROJECT_ID',
-    storageBucket: 'VOTRE_STORAGE_BUCKET',
-    authDomain: 'VOTRE_AUTH_DOMAIN',
+    apiKey: "AIzaSyCDGYXh7QIrueAEb7V_JSPrSpL-9ZFbSu8",
+    authDomain: "djiwcerttech-606cd.firebaseapp.com",
+    projectId: "djiwcerttech-606cd",
+    storageBucket: "djiwcerttech-606cd.appspot.com",
+    messagingSenderId: "258048048672",
+    appId: "1:258048048672:web:7ec6bfb16799f0c7f24645",
+    measurementId: "G-65EVC2YL2W",
   );
 }

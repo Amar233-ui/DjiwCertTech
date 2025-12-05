@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../config/theme.dart';
 
 class CustomButton extends StatelessWidget {
@@ -79,17 +79,21 @@ class CustomButton extends StatelessWidget {
     if (icon != null) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: color, size: 20),
-          const SizedBox(width: 8),
-          Text(
-            text,
-            style: TextStyle(
-              color: color,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
+          Flexible(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: color,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
+          const SizedBox(width: 6),
+          Icon(icon, color: color, size: 18),
         ],
       );
     }
@@ -98,9 +102,11 @@ class CustomButton extends StatelessWidget {
       text,
       style: TextStyle(
         color: color,
-        fontSize: 16,
+        fontSize: width != null ? 14 : 16,
         fontWeight: FontWeight.w600,
       ),
+      overflow: TextOverflow.ellipsis,
+      maxLines: 1,
     );
   }
 }

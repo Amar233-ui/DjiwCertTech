@@ -1,12 +1,14 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import 'package:animate_do/animate_do.dart';
 import '../../config/theme.dart';
 import '../../models/product_model.dart';
 import '../../providers/cart_provider.dart';
+import '../../providers/auth_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../screens/orders/cart_screen.dart';
+import '../screens/auth/login_screen.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final ProductModel product;
@@ -186,15 +188,132 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          // Price
+                          // Description
                           Text(
-                            '${widget.product.price.toStringAsFixed(0)} FCFA',
+                            widget.product.description,
                             style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
-                              color: AppTheme.primaryGreen,
+                              fontSize: 16,
+                              color: AppTheme.textSecondary,
                             ),
                           ),
+                          const SizedBox(height: 16),
+                          // Zone
+                          if (widget.product.zone != null)
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.location_on,
+                                  size: 18,
+                                  color: AppTheme.textSecondary,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  widget.product.zone!,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: AppTheme.textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          const SizedBox(height: 12),
+                          // Rating
+                          if (widget.product.rating > 0)
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.star,
+                                  size: 18,
+                                  color: Colors.amber,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  '${widget.product.rating.toStringAsFixed(1)} (${widget.product.reviewCount} avis)',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: AppTheme.textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          const SizedBox(height: 16),
+                          // Detailed description
+                          if (widget.product.detailedDescription != null) ...[
+                            Text(
+                              widget.product.detailedDescription!,
+                              style: const TextStyle(
+                                color: AppTheme.textSecondary,
+                                fontSize: 15,
+                                height: 1.6,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                          ],
+                          // Price section
+                          if (widget.product.deferredPrice != null) ...[
+                            const Text(
+                              'Prix normal:',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: AppTheme.textSecondary,
+                              ),
+                            ),
+                            Text(
+                              '${widget.product.price.toStringAsFixed(0)} FCFA',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                decoration: TextDecoration.lineThrough,
+                                color: AppTheme.textSecondary,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Paiement différé:',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: AppTheme.primaryGreen,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              '${widget.product.deferredPrice!.toStringAsFixed(0)} FCFA',
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
+                                color: AppTheme.primaryGreen,
+                              ),
+                            ),
+                          ] else ...[
+                            Text(
+                              '${widget.product.price.toStringAsFixed(0)} FCFA',
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
+                                color: AppTheme.primaryGreen,
+                              ),
+                            ),
+                          ],
+                          const SizedBox(height: 16),
+                          // Certification
+                          if (widget.product.certification != null)
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.verified,
+                                  size: 20,
+                                  color: AppTheme.primaryGreen,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  widget.product.certification!,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: AppTheme.primaryGreen,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
                           const SizedBox(height: 20),
                           // Stock status
                           Row(
@@ -221,25 +340,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 ),
                               ),
                             ],
-                          ),
-                          const SizedBox(height: 24),
-                          // Description
-                          const Text(
-                            'Description',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.textPrimary,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            widget.product.description,
-                            style: const TextStyle(
-                              color: AppTheme.textSecondary,
-                              fontSize: 15,
-                              height: 1.6,
-                            ),
                           ),
                           const SizedBox(height: 24),
                           // Quantity selector
@@ -339,42 +439,69 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ),
                   const SizedBox(width: 20),
                   Expanded(
-                    child: CustomButton(
-                      text: 'Ajouter au panier',
-                      icon: Icons.shopping_cart,
-                      onPressed: widget.product.stock > 0
-                          ? () {
-                              final cart = Provider.of<CartProvider>(
-                                context,
-                                listen: false,
-                              );
-                              for (int i = 0; i < _quantity; i++) {
-                                cart.addItem(widget.product);
-                              }
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    '$_quantity x ${widget.product.name} ajoute au panier',
-                                  ),
-                                  behavior: SnackBarBehavior.floating,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  action: SnackBarAction(
-                                    label: 'Voir',
-                                    onPressed: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const CartScreen(),
+                    child: Consumer<AuthProvider>(
+                      builder: (context, auth, child) {
+                        return CustomButton(
+                          text: 'Ajouter au panier',
+                          icon: Icons.shopping_cart,
+                          onPressed: widget.product.stock > 0
+                              ? () {
+                                  if (!auth.isAuthenticated) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: const Text('Veuillez vous connecter pour ajouter au panier'),
+                                        action: SnackBarAction(
+                                          label: 'Se connecter',
+                                          onPressed: () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (context) => const LoginScreen(),
+                                              ),
+                                            );
+                                          },
                                         ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              );
-                            }
-                          : null,
+                                        behavior: SnackBarBehavior.floating,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                    );
+                                    return;
+                                  }
+                                  
+                                  final cart = Provider.of<CartProvider>(
+                                    context,
+                                    listen: false,
+                                  );
+                                  for (int i = 0; i < _quantity; i++) {
+                                    cart.addItem(widget.product);
+                                  }
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        '$_quantity x ${widget.product.name} ajoute au panier',
+                                      ),
+                                      behavior: SnackBarBehavior.floating,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      action: SnackBarAction(
+                                        label: 'Voir',
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const CartScreen(),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                }
+                              : null,
+                        );
+                      },
                     ),
                   ),
                 ],
