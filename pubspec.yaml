@@ -39,6 +39,8 @@ dependencies:
   geolocator: ^14.0.2
   geocoding: ^4.0.0
   js: ^0.7.2
+  image_picker: ^1.0.7
+  mobile_scanner: ^5.2.3
   
   # Animations
   animate_do: ^3.1.2

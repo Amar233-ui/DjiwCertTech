@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:animate_do/animate_do.dart';
 import '../../config/theme.dart';
@@ -60,18 +60,28 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildNavItem(0, Icons.home_outlined, Icons.home, 'Accueil'),
-                _buildNavItem(1, Icons.shopping_bag_outlined,
-                    Icons.shopping_bag, 'Catalogue'),
-                _buildNavItem(2, Icons.cloud_outlined, Icons.cloud, 'Meteo'),
-                _buildNavItem(3, Icons.chat_bubble_outline, Icons.chat_bubble,
-                    'Assistant'),
-                _buildNavItem(
-                    4, Icons.school_outlined, Icons.school, 'Formation'),
+                Expanded(
+                  child: _buildNavItem(0, Icons.home_outlined, Icons.home, 'Accueil'),
+                ),
+                Expanded(
+                  child: _buildNavItem(1, Icons.shopping_bag_outlined,
+                      Icons.shopping_bag, 'Catalogue'),
+                ),
+                Expanded(
+                  child: _buildNavItem(2, Icons.cloud_outlined, Icons.cloud, 'Meteo'),
+                ),
+                Expanded(
+                  child: _buildNavItem(3, Icons.chat_bubble_outline, Icons.chat_bubble,
+                      'Assistant'),
+                ),
+                Expanded(
+                  child: _buildNavItem(
+                      4, Icons.school_outlined, Icons.school, 'Formation'),
+                ),
               ],
             ),
           ),
@@ -87,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: () => setState(() => _currentIndex = index),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
         decoration: BoxDecoration(
           color: isActive
               ? AppTheme.primaryGreen.withOpacity(0.1)
@@ -96,20 +106,26 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               isActive ? activeIcon : icon,
               color: isActive ? AppTheme.primaryGreen : AppTheme.textSecondary,
-              size: 24,
+              size: 22,
             ),
             const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                color:
-                    isActive ? AppTheme.primaryGreen : AppTheme.textSecondary,
-                fontSize: 10,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
+            Flexible(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color:
+                      isActive ? AppTheme.primaryGreen : AppTheme.textSecondary,
+                  fontSize: 9,
+                  fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
+                ),
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             ),
           ],
@@ -390,12 +406,16 @@ class _HomeContent extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 12),
-                        Text(
-                          weather.aiAnalysis!,
-                          style: const TextStyle(
-                            color: AppTheme.textSecondary,
-                            fontSize: 14,
-                            height: 1.5,
+                        Flexible(
+                          child: Text(
+                            weather.aiAnalysis!,
+                            style: const TextStyle(
+                              color: AppTheme.textSecondary,
+                              fontSize: 14,
+                              height: 1.5,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 10,
                           ),
                         ),
                       ],

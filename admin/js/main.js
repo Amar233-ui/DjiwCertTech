@@ -66,6 +66,9 @@ function loadPageData(page) {
         case 'training':
             if (window.loadTraining) window.loadTraining();
             break;
+        case 'users':
+            if (window.loadUsers) window.loadUsers();
+            break;
         case 'statistics':
             if (window.loadStatistics) window.loadStatistics();
             break;

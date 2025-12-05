@@ -18,6 +18,7 @@ class AuthService {
     required Function(FirebaseAuthException) onVerificationFailed,
     required Function(String, int?) onCodeSent,
     required Function(String) onCodeAutoRetrievalTimeout,
+    int? forceResendingToken,
   }) async {
     await _auth.verifyPhoneNumber(
       phoneNumber: phoneNumber,
@@ -29,6 +30,7 @@ class AuthService {
       },
       codeSent: onCodeSent,
       codeAutoRetrievalTimeout: onCodeAutoRetrievalTimeout,
+      forceResendingToken: forceResendingToken,
       timeout: const Duration(seconds: 60),
     );
   }
@@ -82,6 +84,8 @@ class AuthService {
     String? email,
     String? address,
     String? photoUrl,
+    String? region,
+    String? agroEcologicalZone,
   }) async {
     if (currentUser == null) return;
     
@@ -93,6 +97,8 @@ class AuthService {
     if (email != null) updates['email'] = email;
     if (address != null) updates['address'] = address;
     if (photoUrl != null) updates['photoUrl'] = photoUrl;
+    if (region != null) updates['region'] = region;
+    if (agroEcologicalZone != null) updates['agroEcologicalZone'] = agroEcologicalZone;
     
     await _firestore
         .collection(AppConstants.usersCollection)

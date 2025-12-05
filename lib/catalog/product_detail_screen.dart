@@ -9,6 +9,7 @@ import '../../providers/auth_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../screens/orders/cart_screen.dart';
 import '../screens/auth/login_screen.dart';
+import '../screens/catalog/quantity_calculator_screen.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final ProductModel product;
@@ -341,6 +342,174 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               ),
                             ],
                           ),
+                          // Traçabilité
+                          if (widget.product.origin != null ||
+                              widget.product.certificationNumber != null ||
+                              widget.product.producerName != null) ...[
+                            const SizedBox(height: 24),
+                            const Divider(),
+                            const SizedBox(height: 16),
+                            const Text(
+                              'Traçabilité',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            if (widget.product.origin != null)
+                              _buildInfoRow(
+                                'Origine',
+                                widget.product.origin!,
+                                Icons.place,
+                              ),
+                            if (widget.product.certificationNumber != null) ...[
+                              const SizedBox(height: 8),
+                              _buildInfoRow(
+                                'N° Certification',
+                                widget.product.certificationNumber!,
+                                Icons.verified_user,
+                              ),
+                            ],
+                            if (widget.product.producerName != null) ...[
+                              const SizedBox(height: 8),
+                              _buildInfoRow(
+                                'Producteur',
+                                widget.product.producerName!,
+                                Icons.person,
+                              ),
+                            ],
+                            if (widget.product.packagingDate != null) ...[
+                              const SizedBox(height: 8),
+                              _buildInfoRow(
+                                'Date conditionnement',
+                                '${widget.product.packagingDate!.day}/${widget.product.packagingDate!.month}/${widget.product.packagingDate!.year}',
+                                Icons.calendar_today,
+                              ),
+                            ],
+                            if (widget.product.packagingLocation != null) ...[
+                              const SizedBox(height: 8),
+                              _buildInfoRow(
+                                'Lieu conditionnement',
+                                widget.product.packagingLocation!,
+                                Icons.location_city,
+                              ),
+                            ],
+                            if (widget.product.season != null) ...[
+                              const SizedBox(height: 8),
+                              _buildInfoRow(
+                                'Saison',
+                                widget.product.season!,
+                                Icons.wb_sunny,
+                              ),
+                            ],
+                            if (widget.product.agroEcologicalZone != null) ...[
+                              const SizedBox(height: 8),
+                              _buildInfoRow(
+                                'Zone agro-écologique',
+                                widget.product.agroEcologicalZone!,
+                                Icons.map,
+                              ),
+                            ],
+                            if (widget.product.qrCode != null) ...[
+                              const SizedBox(height: 12),
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.primaryGreen.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.qr_code,
+                                      color: AppTheme.primaryGreen,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'Code QR de traçabilité',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          Text(
+                                            widget.product.qrCode!,
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: AppTheme.textSecondary,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ],
+                          const SizedBox(height: 24),
+                          // Calculateur de quantité
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: AppTheme.primaryGreen.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.calculate,
+                                  color: AppTheme.primaryGreen,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Calculer la quantité',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Selon votre superficie',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: AppTheme.textSecondary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                ElevatedButton.icon(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => QuantityCalculatorScreen(
+                                          product: widget.product,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.arrow_forward, size: 18),
+                                  label: const Text('Calculer'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppTheme.primaryGreen,
+                                    foregroundColor: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                           const SizedBox(height: 24),
                           // Quantity selector
                           Row(
@@ -510,6 +679,37 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value, IconData icon) {
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: AppTheme.textSecondary),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppTheme.textSecondary,
+                ),
+              ),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.textPrimary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

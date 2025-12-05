@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:intl/intl.dart';
@@ -7,10 +7,16 @@ import '../../models/order_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/firestore_service.dart';
 import '../../widgets/loading_widget.dart';
+import 'order_detail_screen.dart';
 
-class OrdersScreen extends StatelessWidget {
+class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
 
+  @override
+  State<OrdersScreen> createState() => _OrdersScreenState();
+}
+
+class _OrdersScreenState extends State<OrdersScreen> {
   @override
   Widget build(BuildContext context) {
     final firestoreService = FirestoreService();
@@ -24,32 +30,46 @@ class OrdersScreen extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: StreamBuilder<List<OrderModel>>(
-        stream: firestoreService.getUserOrders(auth.firebaseUser!.uid),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const LoadingWidget(message: 'Chargement...');
-          }
+      body: auth.firebaseUser == null
+          ? const Center(
+              child: Text('Veuillez vous connecter'),
+            )
+          : StreamBuilder<List<OrderModel>>(
+              stream: firestoreService.getUserOrders(auth.firebaseUser!.uid),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const LoadingWidget(message: 'Chargement...');
+                }
 
-          if (snapshot.hasError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.error_outline,
-                    size: 60,
-                    color: AppTheme.textLight,
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Erreur de chargement',
-                    style: TextStyle(color: AppTheme.textSecondary),
-                  ),
-                ],
-              ),
-            );
-          }
+                if (snapshot.hasError) {
+                  debugPrint('Orders error: ${snapshot.error}');
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.error_outline,
+                          size: 60,
+                          color: AppTheme.textLight,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Erreur de chargement: ${snapshot.error}',
+                          style: const TextStyle(color: AppTheme.textSecondary),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Retry
+                            setState(() {});
+                          },
+                          child: const Text('Réessayer'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
 
           final orders = snapshot.data ?? [];
 
@@ -90,7 +110,19 @@ class OrdersScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               return FadeInUp(
                 delay: Duration(milliseconds: index * 100),
-                child: _OrderCard(order: orders[index]),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OrderDetailScreen(
+                          order: orders[index],
+                        ),
+                      ),
+                    );
+                  },
+                  child: _OrderCard(order: orders[index]),
+                ),
               );
             },
           );

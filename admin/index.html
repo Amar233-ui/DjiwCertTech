@@ -466,6 +466,75 @@
                         </div>
                     </div>
                     
+                    <hr style="margin: 20px 0; border: none; border-top: 2px solid #E0E0E0;">
+                    <h3 style="margin-bottom: 15px; color: var(--primary-green);">Traçabilité</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label for="productOrigin">Origine des semences</label>
+                            <input type="text" id="productOrigin" placeholder="Ex: Centre de recherche ISRA">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="productCertificationNumber">Numéro de certification</label>
+                            <input type="text" id="productCertificationNumber" placeholder="Ex: CERT-2024-001">
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label for="productProducerId">ID Producteur</label>
+                            <input type="text" id="productProducerId" placeholder="ID du vendeur certifié">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="productProducerName">Nom du producteur</label>
+                            <input type="text" id="productProducerName" placeholder="Nom du producteur">
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label for="productPackagingDate">Date de conditionnement</label>
+                            <input type="date" id="productPackagingDate">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="productPackagingLocation">Lieu de conditionnement</label>
+                            <input type="text" id="productPackagingLocation" placeholder="Ex: Dakar, Sénégal">
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label for="productSeason">Saison</label>
+                            <select id="productSeason">
+                                <option value="">Sélectionner...</option>
+                                <option value="Hivernage (Juin-Octobre)">Hivernage (Juin-Octobre)</option>
+                                <option value="Saison sèche (Novembre-Mai)">Saison sèche (Novembre-Mai)</option>
+                                <option value="Toute l'année">Toute l'année</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="productAgroZone">Zone agro-écologique</label>
+                            <select id="productAgroZone">
+                                <option value="">Sélectionner...</option>
+                                <option value="Zone Nord (Sahélienne)">Zone Nord (Sahélienne)</option>
+                                <option value="Zone Centre (Soudano-Sahélienne)">Zone Centre (Soudano-Sahélienne)</option>
+                                <option value="Zone Sud (Soudanienne)">Zone Sud (Soudanienne)</option>
+                                <option value="Zone Casamance (Guinéenne)">Zone Casamance (Guinéenne)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="productIsForestSeed">
+                            Semence forestière
+                        </label>
+                    </div>
+                    
                     <div class="form-group">
                         <label>
                             <input type="checkbox" id="productIsAvailable" checked>
@@ -482,6 +551,125 @@
                     <i class="fas fa-save"></i> Enregistrer
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Training Modal -->
+    <div id="trainingModalOverlay" class="modal-overlay" style="display: none;">
+        <div class="modal" id="trainingModal" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 id="trainingModalTitle">Ajouter une formation</h2>
+                <button class="modal-close" onclick="closeTrainingModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="trainingForm">
+                    <div class="form-group">
+                        <label for="trainingTitle">Titre *</label>
+                        <input type="text" id="trainingTitle" required placeholder="Ex: Techniques de plantation du mil">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="trainingDescription">Description courte *</label>
+                        <textarea id="trainingDescription" rows="3" required placeholder="Description de la formation"></textarea>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label for="trainingCategory">Catégorie *</label>
+                            <select id="trainingCategory" required>
+                                <option value="">Sélectionner...</option>
+                                <option value="Culture">Culture</option>
+                                <option value="Elevage">Elevage</option>
+                                <option value="Equipement">Equipement</option>
+                                <option value="Business">Business</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="trainingDuration">Durée (minutes) *</label>
+                            <input type="number" id="trainingDuration" min="1" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="trainingContent">Contenu détaillé *</label>
+                        <textarea id="trainingContent" rows="10" required placeholder="Contenu complet de la formation"></textarea>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label for="trainingVideoUrl">URL Vidéo (optionnel)</label>
+                            <input type="url" id="trainingVideoUrl" placeholder="https://...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="trainingAudioUrl">URL Audio (optionnel)</label>
+                            <input type="url" id="trainingAudioUrl" placeholder="https://...">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="trainingImageUrl">URL Image (optionnel)</label>
+                        <input type="url" id="trainingImageUrl" placeholder="https://...">
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="trainingIsDownloadable">
+                                Téléchargeable
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="trainingIsPublished" checked>
+                                Publiée
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" id="trainingId">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeTrainingModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveTraining(event)">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Management Page -->
+    <div id="usersPage" class="page" style="display: none;">
+        <div class="page-header">
+            <h1><i class="fas fa-users"></i> Gestion des Utilisateurs</h1>
+            <div class="page-actions">
+                <input type="text" id="userSearch" class="search-input" placeholder="Rechercher un utilisateur...">
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
+                        <th>Région</th>
+                        <th>Zone</th>
+                        <th>Rôle</th>
+                        <th>Date inscription</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <!-- Rempli dynamiquement -->
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -504,6 +692,7 @@
     <script src="js/weather.js"></script>
     <script src="js/logistics.js"></script>
     <script src="js/training.js"></script>
+    <script src="js/users.js"></script>
     <script src="js/statistics.js"></script>
     <script src="js/main.js"></script>
 </body>

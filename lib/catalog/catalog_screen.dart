@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:animate_do/animate_do.dart';
 import '../../config/theme.dart';
+import '../../config/regions_constants.dart';
 import '../../models/product_model.dart';
 import '../../services/firestore_service.dart';
 import '../../providers/cart_provider.dart';
@@ -25,6 +26,8 @@ class _CatalogScreenState extends State<CatalogScreen> {
   final FirestoreService _firestoreService = FirestoreService();
   final TextEditingController _searchController = TextEditingController();
   String _selectedCategory = 'Tous';
+  String _selectedRegion = 'Toutes';
+  String _selectedSeason = 'Toutes';
   String _searchQuery = '';
 
   final List<String> _categories = [
@@ -34,6 +37,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
     'Outils',
     'Protection',
     'Irrigation',
+    'Semences forestières',
   ];
 
   @override
@@ -44,14 +48,20 @@ class _CatalogScreenState extends State<CatalogScreen> {
 
   List<ProductModel> _filterProducts(List<ProductModel> products) {
     return products.where((product) {
-      final matchesCategory =
-          _selectedCategory == 'Tous' || product.category == _selectedCategory;
+      final matchesCategory = _selectedCategory == 'Tous' || 
+          (_selectedCategory == 'Semences forestières' 
+              ? product.isForestSeed 
+              : product.category == _selectedCategory);
       final matchesSearch = _searchQuery.isEmpty ||
           product.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          product.description
-              .toLowerCase()
-              .contains(_searchQuery.toLowerCase());
-      return matchesCategory && matchesSearch;
+          product.description.toLowerCase().contains(_searchQuery.toLowerCase());
+      final matchesRegion = _selectedRegion == 'Toutes' || 
+          product.zone == _selectedRegion ||
+          product.agroEcologicalZone == _selectedRegion;
+      final matchesSeason = _selectedSeason == 'Toutes' || 
+          product.season == _selectedSeason ||
+          product.season == 'Toute l\'année';
+      return matchesCategory && matchesSearch && matchesRegion && matchesSeason;
     }).toList();
   }
 
@@ -234,6 +244,77 @@ class _CatalogScreenState extends State<CatalogScreen> {
                           );
                         },
                       ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Filtres région et saison
+                  FadeInDown(
+                    delay: const Duration(milliseconds: 300),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.grey.shade200),
+                            ),
+                            child: DropdownButton<String>(
+                              value: _selectedRegion,
+                              isExpanded: true,
+                              underline: const SizedBox(),
+                              icon: const Icon(Icons.location_on, size: 18),
+                              items: ['Toutes', ...RegionsConstants.regions]
+                                  .map((region) => DropdownMenuItem(
+                                        value: region,
+                                        child: Text(
+                                          region,
+                                          style: const TextStyle(fontSize: 13),
+                                        ),
+                                      ))
+                                  .toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedRegion = value ?? 'Toutes';
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.grey.shade200),
+                            ),
+                            child: DropdownButton<String>(
+                              value: _selectedSeason,
+                              isExpanded: true,
+                              underline: const SizedBox(),
+                              icon: const Icon(Icons.calendar_today, size: 18),
+                              items: ['Toutes', ...RegionsConstants.seasons]
+                                  .map((season) => DropdownMenuItem(
+                                        value: season,
+                                        child: Text(
+                                          season,
+                                          style: const TextStyle(fontSize: 13),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ))
+                                  .toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedSeason = value ?? 'Toutes';
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

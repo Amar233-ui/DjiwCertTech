@@ -1,7 +1,8 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'config/theme.dart';
 import 'config/firebase_config.dart';
@@ -12,6 +13,9 @@ import 'screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialiser les données de locale pour le formatage des dates
+  await initializeDateFormatting('fr_FR', null);
 
   await Firebase.initializeApp(
     options: FirebaseConfig.currentPlatform,

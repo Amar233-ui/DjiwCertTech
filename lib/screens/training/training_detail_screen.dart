@@ -1,8 +1,10 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:provider/provider.dart';
 import '../../config/theme.dart';
 import '../../models/training_model.dart';
+import '../../widgets/custom_button.dart';
 
 class TrainingDetailScreen extends StatelessWidget {
   final TrainingModel training;
@@ -134,58 +136,50 @@ class TrainingDetailScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    // Video button
-                    if (training.videoUrl != null)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: AppTheme.primaryGreen.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(16),
+                    // Media buttons
+                    if (training.videoUrl != null || training.audioUrl != null) ...[
+                      if (training.videoUrl != null)
+                        CustomButton(
+                          text: 'Regarder la vidéo',
+                          icon: Icons.play_circle_outline,
+                          onPressed: () {
+                            // TODO: Ouvrir lecteur vidéo
+                          },
                         ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: AppTheme.primaryGreen,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Icon(
-                                Icons.play_arrow,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            const Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Video disponible',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    'Appuyez pour regarder',
-                                    style: TextStyle(
-                                      color: AppTheme.textSecondary,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Icon(
-                              Icons.arrow_forward_ios,
-                              color: AppTheme.primaryGreen,
-                              size: 16,
-                            ),
-                          ],
+                      if (training.audioUrl != null) ...[
+                        const SizedBox(height: 12),
+                        CustomButton(
+                          text: 'Écouter l\'audio',
+                          icon: Icons.headphones,
+                          onPressed: () {
+                            // TODO: Ouvrir lecteur audio
+                          },
+                          isOutlined: true,
                         ),
+                      ],
+                      const SizedBox(height: 16),
+                    ],
+                    // Download button
+                    if (training.isDownloadable)
+                      CustomButton(
+                        text: training.isOfflineAvailable 
+                            ? 'Téléchargé (Disponible hors-ligne)' 
+                            : 'Télécharger pour hors-ligne',
+                        icon: training.isOfflineAvailable 
+                            ? Icons.check_circle 
+                            : Icons.download,
+                        onPressed: () {
+                          // TODO: Implémenter téléchargement
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(training.isOfflineAvailable
+                                  ? 'Déjà téléchargé'
+                                  : 'Téléchargement en cours...'),
+                              backgroundColor: AppTheme.primaryGreen,
+                            ),
+                          );
+                        },
+                        isOutlined: training.isOfflineAvailable,
                       ),
                     const SizedBox(height: 24),
                     // Content

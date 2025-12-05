@@ -6,8 +6,13 @@ import '../widgets/custom_button.dart';
 import '../providers/auth_provider.dart';
 import 'auth/login_screen.dart';
 import '../catalog/catalog_screen.dart';
+import 'catalog/seed_recommendations_screen.dart';
 import 'training/training_screen.dart';
 import 'orders/orders_screen.dart';
+import 'advice/field_management_screen.dart';
+import 'vendor/vendor_dashboard_screen.dart';
+import 'vendor/become_vendor_screen.dart';
+import 'qr_scanner_screen.dart';
 
 class LandingScreen extends StatelessWidget {
   const LandingScreen({super.key});
@@ -126,6 +131,69 @@ class LandingScreen extends StatelessWidget {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => const OrdersScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                  _DrawerItem(
+                    icon: Icons.eco_outlined,
+                    title: 'Gestion de Champs',
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const FieldManagementScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  _DrawerItem(
+                    icon: Icons.auto_awesome,
+                    title: 'Recommandations IA',
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const SeedRecommendationsScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  _DrawerItem(
+                    icon: Icons.qr_code_scanner,
+                    title: 'Scanner QR Code',
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const QRScannerScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  if (authProvider.isAuthenticated)
+                    _DrawerItem(
+                      icon: Icons.store,
+                      title: 'Devenir Vendeur',
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const BecomeVendorScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                  if (authProvider.user?.email != null && 
+                      authProvider.user!.email!.contains('vendeur'))
+                    _DrawerItem(
+                      icon: Icons.store,
+                      title: 'Espace Vendeur',
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const VendorDashboardScreen(),
                           ),
                         );
                       },

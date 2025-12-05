@@ -11,6 +11,7 @@ class AuthProvider with ChangeNotifier {
   bool _isLoading = false;
   String? _error;
   String? _verificationId;
+  int? _resendToken;
 
   User? get firebaseUser => _firebaseUser;
   UserModel? get user => _user;
@@ -43,6 +44,7 @@ class AuthProvider with ChangeNotifier {
     try {
       await _authService.sendOTP(
         phoneNumber: phoneNumber,
+        forceResendingToken: _resendToken,
         onVerificationCompleted: (credential) async {
           await FirebaseAuth.instance.signInWithCredential(credential);
         },
@@ -53,6 +55,7 @@ class AuthProvider with ChangeNotifier {
         },
         onCodeSent: (verificationId, resendToken) {
           _verificationId = verificationId;
+          _resendToken = resendToken;
           _isLoading = false;
           notifyListeners();
         },
@@ -102,6 +105,8 @@ class AuthProvider with ChangeNotifier {
     String? name,
     String? email,
     String? address,
+    String? region,
+    String? agroEcologicalZone,
   }) async {
     _isLoading = true;
     notifyListeners();
@@ -111,6 +116,8 @@ class AuthProvider with ChangeNotifier {
         name: name,
         email: email,
         address: address,
+        region: region,
+        agroEcologicalZone: agroEcologicalZone,
       );
       await _loadUserData();
     } catch (e) {
@@ -218,6 +225,7 @@ class AuthProvider with ChangeNotifier {
     await _authService.signOut();
     _user = null;
     _verificationId = null;
+    _resendToken = null;
     notifyListeners();
   }
 

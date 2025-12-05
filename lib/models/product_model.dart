@@ -15,6 +15,17 @@ class ProductModel {
   final bool isAvailable;
   final double rating;
   final int reviewCount;
+  // Traçabilité
+  final String? origin;
+  final String? certificationNumber;
+  final String? producerId;
+  final String? producerName;
+  final DateTime? packagingDate;
+  final String? packagingLocation;
+  final String? qrCode;
+  final String? season;
+  final String? agroEcologicalZone;
+  final bool isForestSeed;
   final DateTime createdAt;
 
   ProductModel({
@@ -32,6 +43,16 @@ class ProductModel {
     this.isAvailable = true,
     this.rating = 0.0,
     this.reviewCount = 0,
+    this.origin,
+    this.certificationNumber,
+    this.producerId,
+    this.producerName,
+    this.packagingDate,
+    this.packagingLocation,
+    this.qrCode,
+    this.season,
+    this.agroEcologicalZone,
+    this.isForestSeed = false,
     required this.createdAt,
   });
 
@@ -52,6 +73,16 @@ class ProductModel {
       isAvailable: data['isAvailable'] ?? true,
       rating: (data['rating'] ?? 0).toDouble(),
       reviewCount: data['reviewCount'] ?? 0,
+      origin: data['origin'],
+      certificationNumber: data['certificationNumber'],
+      producerId: data['producerId'],
+      producerName: data['producerName'],
+      packagingDate: data['packagingDate'] != null ? (data['packagingDate'] as Timestamp).toDate() : null,
+      packagingLocation: data['packagingLocation'],
+      qrCode: data['qrCode'],
+      season: data['season'],
+      agroEcologicalZone: data['agroEcologicalZone'],
+      isForestSeed: data['isForestSeed'] ?? false,
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
@@ -71,6 +102,16 @@ class ProductModel {
       'isAvailable': isAvailable,
       'rating': rating,
       'reviewCount': reviewCount,
+      'origin': origin,
+      'certificationNumber': certificationNumber,
+      'producerId': producerId,
+      'producerName': producerName,
+      'packagingDate': packagingDate != null ? Timestamp.fromDate(packagingDate!) : null,
+      'packagingLocation': packagingLocation,
+      'qrCode': qrCode,
+      'season': season,
+      'agroEcologicalZone': agroEcologicalZone,
+      'isForestSeed': isForestSeed,
       'createdAt': Timestamp.fromDate(createdAt),
     };
   }

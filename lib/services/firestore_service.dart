@@ -1,4 +1,5 @@
-﻿import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import '../models/product_model.dart';
 import '../models/order_model.dart';
 import '../models/training_model.dart';
@@ -16,6 +17,7 @@ class FirestoreService {
         .snapshots()
         .map((snapshot) => snapshot.docs
             .map((doc) => ProductModel.fromFirestore(doc))
+            .where((product) => product.isAvailable)
             .toList());
   }
 
@@ -52,14 +54,39 @@ class FirestoreService {
   }
 
   Stream<List<OrderModel>> getUserOrders(String userId) {
-    return _firestore
+    try {
+      return _firestore
+          .collection(AppConstants.ordersCollection)
+          .where('userId', isEqualTo: userId)
+          .snapshots()
+          .map((snapshot) {
+            final orders = snapshot.docs
+                .map((doc) {
+                  try {
+                    return OrderModel.fromFirestore(doc);
+                  } catch (e) {
+                    debugPrint('Error parsing order ${doc.id}: $e');
+                    return null;
+                  }
+                })
+                .where((order) => order != null)
+                .cast<OrderModel>()
+                .toList();
+            // Trier par date de création (plus récent en premier)
+            orders.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+            return orders;
+          });
+    } catch (e) {
+      debugPrint('Error in getUserOrders: $e');
+      return Stream.value([]);
+    }
+  }
+
+  Future<void> updateOrder(String orderId, Map<String, dynamic> updates) async {
+    await _firestore
         .collection(AppConstants.ordersCollection)
-        .where('userId', isEqualTo: userId)
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => OrderModel.fromFirestore(doc))
-            .toList());
+        .doc(orderId)
+        .update(updates);
   }
 
   Future<void> updateOrderStatus(String orderId, OrderStatus status) async {
@@ -121,5 +148,27 @@ class FirestoreService {
         .toList();
     
     return categories;
+  }
+
+  // ==================== VENDOR REQUESTS ====================
+  
+  Future<void> createVendorRequest({
+    required String userId,
+    required String companyName,
+    required String description,
+    required String address,
+    String? certificationNumber,
+    required String certificationDocumentUrl,
+  }) async {
+    await _firestore.collection('vendorRequests').add({
+      'userId': userId,
+      'companyName': companyName,
+      'description': description,
+      'address': address,
+      'certificationNumber': certificationNumber,
+      'certificationDocumentUrl': certificationDocumentUrl,
+      'status': 'pending',
+      'createdAt': Timestamp.now(),
+    });
   }
 }

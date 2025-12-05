@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../config/theme.dart';
 
@@ -74,6 +74,10 @@ class ForecastCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 70,
+      constraints: const BoxConstraints(
+        minHeight: 120,
+        maxHeight: 130,
+      ),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
       decoration: BoxDecoration(
         color: isSelected 
@@ -90,6 +94,7 @@ class ForecastCard extends StatelessWidget {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
             day,
@@ -98,22 +103,28 @@ class ForecastCard extends StatelessWidget {
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 8),
-          CachedNetworkImage(
-            imageUrl: iconUrl,
+          const SizedBox(height: 4),
+          SizedBox(
             width: 40,
             height: 40,
-            placeholder: (context, url) => const SizedBox(
-              width: 40,
-              height: 40,
-            ),
-            errorWidget: (context, url, error) => Icon(
-              Icons.cloud,
-              color: isSelected ? Colors.white : AppTheme.textSecondary,
+            child: CachedNetworkImage(
+              imageUrl: iconUrl,
+              fit: BoxFit.contain,
+              placeholder: (context, url) => const SizedBox(
+                width: 40,
+                height: 40,
+              ),
+              errorWidget: (context, url, error) => Icon(
+                Icons.cloud,
+                color: isSelected ? Colors.white : AppTheme.textSecondary,
+                size: 30,
+              ),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
           Text(
             tempMax,
             style: TextStyle(
@@ -121,6 +132,8 @@ class ForecastCard extends StatelessWidget {
               fontSize: 14,
               fontWeight: FontWeight.bold,
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
           Text(
             tempMin,
@@ -130,6 +143,8 @@ class ForecastCard extends StatelessWidget {
                   : AppTheme.textLight,
               fontSize: 12,
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),

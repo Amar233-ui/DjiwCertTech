@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:animate_do/animate_do.dart';
 import '../../config/theme.dart';
@@ -6,6 +6,7 @@ import '../../models/training_model.dart';
 import '../../services/firestore_service.dart';
 import '../../widgets/loading_widget.dart';
 import 'training_detail_screen.dart';
+import 'training_recommendations_screen.dart';
 
 class TrainingScreen extends StatefulWidget {
   const TrainingScreen({super.key});
@@ -39,15 +40,45 @@ class _TrainingScreenState extends State<TrainingScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  FadeInDown(
-                    child: const Text(
-                      'Formation',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.textPrimary,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      FadeInDown(
+                        child: const Text(
+                          'Formation',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.textPrimary,
+                          ),
+                        ),
                       ),
-                    ),
+                      FadeInRight(
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const TrainingRecommendationsScreen(),
+                              ),
+                            );
+                          },
+                          icon: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: AppTheme.primaryGreen.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(
+                              Icons.auto_awesome,
+                              color: AppTheme.primaryGreen,
+                              size: 20,
+                            ),
+                          ),
+                          tooltip: 'Recommandations IA',
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 8),
                   FadeInDown(

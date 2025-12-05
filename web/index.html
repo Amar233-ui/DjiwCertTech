@@ -31,9 +31,67 @@
 
   <title>djiwtech</title>
   <link rel="manifest" href="manifest.json">
+  <style>
+    /* Masquer le container reCAPTCHA quand l'utilisateur est connecté */
+    #recaptcha-container,
+    .grecaptcha-badge,
+    iframe[title*="reCAPTCHA"],
+    div[id*="recaptcha"],
+    div[class*="recaptcha"] {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      height: 0 !important;
+      width: 0 !important;
+      position: absolute !important;
+      left: -9999px !important;
+    }
+  </style>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>
-  <div id="recaptcha-container"></div>
+  <script>
+    // Masquer le reCAPTCHA container immédiatement et après chaque changement
+    function hideRecaptcha() {
+      const selectors = [
+        '#recaptcha-container',
+        '.grecaptcha-badge',
+        'iframe[title*="reCAPTCHA"]',
+        'div[id*="recaptcha"]',
+        'div[class*="recaptcha"]'
+      ];
+      
+      selectors.forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(el => {
+          el.style.display = 'none';
+          el.style.visibility = 'hidden';
+          el.style.opacity = '0';
+          el.style.height = '0';
+          el.style.width = '0';
+          el.style.position = 'absolute';
+          el.style.left = '-9999px';
+        });
+      });
+    }
+    
+    // Masquer immédiatement
+    hideRecaptcha();
+    
+    // Observer les changements du DOM pour masquer les nouveaux éléments reCAPTCHA
+    const observer = new MutationObserver(() => {
+      hideRecaptcha();
+    });
+    
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['id', 'class']
+    });
+    
+    // Masquer périodiquement (au cas où)
+    setInterval(hideRecaptcha, 500);
+  </script>
 </body>
 </html>

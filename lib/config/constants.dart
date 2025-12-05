@@ -1,7 +1,7 @@
-﻿class AppConstants {
+class AppConstants {
   // API Keys (à remplacer par vos clés)
-  static const String openWeatherApiKey = 'VOTRE_CLE_OPENWEATHER';
-  static const String geminiApiKey = 'VOTRE_CLE_GEMINI';
+  static const String openWeatherApiKey = '735881568d383dfc3e4c93d72d226ef1';
+  static const String geminiApiKey = 'AIzaSyD0Tvp9-KWkupcMXofOoEGEE017uubKId8';
 
   // API URLs
   static const String openWeatherBaseUrl =

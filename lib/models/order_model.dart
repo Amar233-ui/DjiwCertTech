@@ -1,4 +1,4 @@
-﻿import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum OrderStatus {
   pending,
@@ -55,6 +55,8 @@ class OrderModel {
   final OrderStatus status;
   final String? address;
   final String? note;
+  final String? deliveryProofUrl;
+  final DateTime? deliveredAt;
   final DateTime createdAt;
   final DateTime? updatedAt;
 
@@ -66,6 +68,8 @@ class OrderModel {
     this.status = OrderStatus.pending,
     this.address,
     this.note,
+    this.deliveryProofUrl,
+    this.deliveredAt,
     required this.createdAt,
     this.updatedAt,
   });
@@ -86,6 +90,10 @@ class OrderModel {
       ),
       address: data['address'],
       note: data['note'],
+      deliveryProofUrl: data['deliveryProofUrl'],
+      deliveredAt: data['deliveredAt'] != null
+          ? (data['deliveredAt'] as Timestamp).toDate()
+          : null,
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       updatedAt: data['updatedAt'] != null
           ? (data['updatedAt'] as Timestamp).toDate()
@@ -101,6 +109,8 @@ class OrderModel {
       'status': status.name,
       'address': address,
       'note': note,
+      'deliveryProofUrl': deliveryProofUrl,
+      'deliveredAt': deliveredAt != null ? Timestamp.fromDate(deliveredAt!) : null,
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': updatedAt != null ? Timestamp.fromDate(updatedAt!) : null,
     };

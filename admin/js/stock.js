@@ -145,6 +145,22 @@ async function editProduct(productId) {
         document.getElementById('productReviewCount').value = product.reviewCount || 0;
         document.getElementById('productIsAvailable').checked = product.isAvailable !== false;
         
+        // Traçabilité
+        document.getElementById('productOrigin').value = product.origin || '';
+        document.getElementById('productCertificationNumber').value = product.certificationNumber || '';
+        document.getElementById('productProducerId').value = product.producerId || '';
+        document.getElementById('productProducerName').value = product.producerName || '';
+        if (product.packagingDate) {
+            const packagingDate = product.packagingDate.toDate ? product.packagingDate.toDate() : new Date(product.packagingDate);
+            document.getElementById('productPackagingDate').value = packagingDate.toISOString().split('T')[0];
+        } else {
+            document.getElementById('productPackagingDate').value = '';
+        }
+        document.getElementById('productPackagingLocation').value = product.packagingLocation || '';
+        document.getElementById('productSeason').value = product.season || '';
+        document.getElementById('productAgroZone').value = product.agroEcologicalZone || '';
+        document.getElementById('productIsForestSeed').checked = product.isForestSeed || false;
+        
         // Show existing image if available
         if (product.imageUrl) {
             document.getElementById('productImagePreviewImg').src = product.imageUrl;
@@ -258,6 +274,18 @@ async function saveProduct(event) {
         const reviewCount = parseInt(document.getElementById('productReviewCount').value) || 0;
         const isAvailable = document.getElementById('productIsAvailable').checked;
         const imageFile = document.getElementById('productImage').files[0];
+        
+        // Traçabilité
+        const origin = document.getElementById('productOrigin').value.trim() || null;
+        const certificationNumber = document.getElementById('productCertificationNumber').value.trim() || null;
+        const producerId = document.getElementById('productProducerId').value.trim() || null;
+        const producerName = document.getElementById('productProducerName').value.trim() || null;
+        const packagingDateStr = document.getElementById('productPackagingDate').value;
+        const packagingDate = packagingDateStr ? new Date(packagingDateStr) : null;
+        const packagingLocation = document.getElementById('productPackagingLocation').value.trim() || null;
+        const season = document.getElementById('productSeason').value || null;
+        const agroEcologicalZone = document.getElementById('productAgroZone').value || null;
+        const isForestSeed = document.getElementById('productIsForestSeed').checked;
         
         // Upload image if new file selected
         let imageUrl = null;

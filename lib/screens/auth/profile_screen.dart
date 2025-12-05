@@ -1,6 +1,7 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../config/theme.dart';
+import '../../config/regions_constants.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
@@ -18,6 +19,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late TextEditingController _nameController;
   late TextEditingController _emailController;
   late TextEditingController _addressController;
+  String? _selectedRegion;
+  String? _selectedAgroZone;
 
   @override
   void initState() {
@@ -26,6 +29,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _nameController = TextEditingController(text: user?.name ?? '');
     _emailController = TextEditingController(text: user?.email ?? '');
     _addressController = TextEditingController(text: user?.address ?? '');
+    _selectedRegion = user?.region;
+    _selectedAgroZone = user?.agroEcologicalZone;
   }
 
   @override
@@ -43,13 +48,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
         name: _nameController.text.trim(),
         email: _emailController.text.trim(),
         address: _addressController.text.trim(),
+        region: _selectedRegion,
+        agroEcologicalZone: _selectedAgroZone,
       );
       
       if (!mounted) return;
       
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Profil mis a jour'),
+          content: Text('Profil mis à jour'),
           backgroundColor: AppTheme.primaryGreen,
         ),
       );
@@ -185,6 +192,56 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     hintText: 'Entrez votre adresse',
                     prefixIcon: Icons.location_on_outlined,
                     maxLines: 2,
+                  ),
+                  const SizedBox(height: 20),
+                  // Région
+                  DropdownButtonFormField<String>(
+                    value: _selectedRegion,
+                    decoration: InputDecoration(
+                      labelText: 'Région',
+                      prefixIcon: const Icon(Icons.map_outlined),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                    items: RegionsConstants.regions.map((region) {
+                      return DropdownMenuItem(
+                        value: region,
+                        child: Text(region),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedRegion = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  // Zone agro-écologique
+                  DropdownButtonFormField<String>(
+                    value: _selectedAgroZone,
+                    decoration: InputDecoration(
+                      labelText: 'Zone agro-écologique',
+                      prefixIcon: const Icon(Icons.eco_outlined),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                    items: RegionsConstants.agroEcologicalZones.map((zone) {
+                      return DropdownMenuItem(
+                        value: zone,
+                        child: Text(zone),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedAgroZone = value;
+                      });
+                    },
                   ),
                   const SizedBox(height: 32),
                   CustomButton(

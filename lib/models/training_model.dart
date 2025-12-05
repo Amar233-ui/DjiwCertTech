@@ -1,14 +1,17 @@
-﻿import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TrainingModel {
   final String id;
   final String title;
   final String description;
   final String? videoUrl;
+  final String? audioUrl;
   final String? imageUrl;
   final String content;
   final String category;
   final int duration; // in minutes
+  final bool isDownloadable;
+  final bool isOfflineAvailable;
   final DateTime createdAt;
 
   TrainingModel({
@@ -16,10 +19,13 @@ class TrainingModel {
     required this.title,
     required this.description,
     this.videoUrl,
+    this.audioUrl,
     this.imageUrl,
     required this.content,
     required this.category,
     required this.duration,
+    this.isDownloadable = false,
+    this.isOfflineAvailable = false,
     required this.createdAt,
   });
 
@@ -43,10 +49,13 @@ class TrainingModel {
       'title': title,
       'description': description,
       'videoUrl': videoUrl,
+      'audioUrl': audioUrl,
       'imageUrl': imageUrl,
       'content': content,
       'category': category,
       'duration': duration,
+      'isDownloadable': isDownloadable,
+      'isOfflineAvailable': isOfflineAvailable,
       'createdAt': Timestamp.fromDate(createdAt),
     };
   }
