@@ -21,22 +21,22 @@ class LandingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: _buildDrawer(),
+      drawer: _buildDrawer(context),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
               // Header avec bouton connexion
-              _buildHeader(),
+              _buildHeader(context),
               
               // Hero Section
-              _buildHeroSection(),
+              _buildHeroSection(context),
               
               // Features Section
-              _buildFeaturesSection(),
+              _buildFeaturesSection(context),
               
               // CTA Section
-              _buildCTASection(),
+              _buildCTASection(context),
               
               const SizedBox(height: 40),
             ],
@@ -57,7 +57,7 @@ class LandingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDrawer() {
+  Widget _buildDrawer(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     
     return Drawer(
@@ -320,7 +320,7 @@ class LandingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeroSection() {
+  Widget _buildHeroSection(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -550,7 +550,7 @@ class LandingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCTASection() {
+  Widget _buildCTASection(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(24),
       padding: const EdgeInsets.all(32),
