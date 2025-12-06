@@ -13,6 +13,7 @@ import 'advice/field_management_screen.dart';
 import 'vendor/vendor_dashboard_screen.dart';
 import 'vendor/become_vendor_screen.dart';
 import 'qr_scanner_screen.dart';
+import 'chatbot/chatbot_screen.dart';
 
 class LandingScreen extends StatelessWidget {
   const LandingScreen({super.key});
@@ -20,22 +21,22 @@ class LandingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: _buildDrawer(context),
+      drawer: _buildDrawer(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
               // Header avec bouton connexion
-              _buildHeader(context),
+              _buildHeader(),
               
               // Hero Section
-              _buildHeroSection(context),
+              _buildHeroSection(),
               
               // Features Section
-              _buildFeaturesSection(context),
+              _buildFeaturesSection(),
               
               // CTA Section
-              _buildCTASection(context),
+              _buildCTASection(),
               
               const SizedBox(height: 40),
             ],
@@ -44,7 +45,11 @@ class LandingScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Chat support
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const ChatbotScreen(),
+            ),
+          );
         },
         backgroundColor: AppTheme.primaryGreen,
         child: const Icon(Icons.chat_bubble_outline, color: Colors.white),
@@ -52,7 +57,7 @@ class LandingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDrawer(BuildContext context) {
+  Widget _buildDrawer() {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     
     return Drawer(
@@ -239,9 +244,11 @@ class LandingScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          IconButton(
-            icon: const Icon(Icons.menu, color: AppTheme.textPrimary),
-            onPressed: () => Scaffold.of(context).openDrawer(),
+          Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.menu, color: AppTheme.textPrimary),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+            ),
           ),
           Flexible(
             child: FadeInDown(
@@ -313,7 +320,7 @@ class LandingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeroSection(BuildContext context) {
+  Widget _buildHeroSection() {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -543,7 +550,7 @@ class LandingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCTASection(BuildContext context) {
+  Widget _buildCTASection() {
     return Container(
       margin: const EdgeInsets.all(24),
       padding: const EdgeInsets.all(32),

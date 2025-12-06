@@ -86,6 +86,11 @@ function openAddProductModal() {
         document.getElementById('productIsAvailable').checked = true;
         document.getElementById('productRating').value = '0';
         document.getElementById('productReviewCount').value = '0';
+        document.getElementById('productQrCode').value = '';
+        const qrPreview = document.getElementById('qrCodePreview');
+        if (qrPreview) {
+            qrPreview.style.display = 'none';
+        }
         
         // Reset file input
         const fileInput = document.getElementById('productImage');
@@ -160,6 +165,17 @@ async function editProduct(productId) {
         document.getElementById('productSeason').value = product.season || '';
         document.getElementById('productAgroZone').value = product.agroEcologicalZone || '';
         document.getElementById('productIsForestSeed').checked = product.isForestSeed || false;
+        document.getElementById('productQrCode').value = product.qrCode || '';
+        
+        // Afficher le QR code si existant
+        if (product.qrCode) {
+            // Attendre un peu pour que le DOM soit prêt
+            setTimeout(() => {
+                generateQRCodeDisplay(product.qrCode);
+            }, 200);
+        } else {
+            document.getElementById('qrCodePreview').style.display = 'none';
+        }
         
         // Show existing image if available
         if (product.imageUrl) {
@@ -287,6 +303,15 @@ async function saveProduct(event) {
         const agroEcologicalZone = document.getElementById('productAgroZone').value || null;
         const isForestSeed = document.getElementById('productIsForestSeed').checked;
         
+        // QR Code - générer automatiquement si vide
+        let qrCode = document.getElementById('productQrCode').value.trim();
+        if (!qrCode) {
+            // Générer un QR code unique basé sur le nom, timestamp et un random
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 9);
+            qrCode = `DJIW-${name.toUpperCase().replace(/\s+/g, '-').substring(0, 10)}-${timestamp}-${random}`;
+        }
+        
         // Upload image if new file selected
         let imageUrl = null;
         if (imageFile) {
@@ -313,9 +338,21 @@ async function saveProduct(event) {
             reviewCount,
             isAvailable,
             imageUrl,
+            // Traçabilité
+            origin,
+            certificationNumber,
+            producerId,
+            producerName,
+            packagingDate: packagingDate ? firebase.firestore.Timestamp.fromDate(packagingDate) : null,
+            packagingLocation,
+            season,
+            agroEcologicalZone,
+            isForestSeed,
+            qrCode,
             updatedAt: new Date()
         };
         
+        let savedProductId = productId;
         if (productId) {
             // Update existing product
             await window.db.collection(window.COLLECTIONS.products).doc(productId).update(productData);
@@ -323,8 +360,16 @@ async function saveProduct(event) {
         } else {
             // Create new product
             productData.createdAt = new Date();
-            await window.db.collection(window.COLLECTIONS.products).add(productData);
+            const docRef = await window.db.collection(window.COLLECTIONS.products).add(productData);
+            savedProductId = docRef.id;
             alert('Produit ajouté avec succès');
+        }
+        
+        // Afficher le QR code généré
+        if (qrCode) {
+            setTimeout(() => {
+                generateQRCodeDisplay(qrCode);
+            }, 300);
         }
         
         closeProductModal();
@@ -363,11 +408,223 @@ window.editProduct = editProduct;
 window.deleteProduct = deleteProduct;
 window.closeProductModal = closeProductModal;
 window.saveProduct = saveProduct;
+window.generateQRCode = generateQRCode;
+window.downloadQRCode = downloadQRCode;
+window.printQRCode = printQRCode;
+
+// Fonction pour générer le QR code
+function generateQRCode() {
+    // Vérifier que la bibliothèque est disponible
+    if (typeof QRCode === 'undefined' && typeof window.QRCodeLib === 'undefined') {
+        alert('Bibliothèque QRCode non chargée. Veuillez recharger la page (F5).');
+        console.error('QRCode non disponible');
+        return;
+    }
+    
+    let qrCode = document.getElementById('productQrCode').value.trim();
+    if (!qrCode) {
+        const name = document.getElementById('productName').value.trim();
+        if (!name) {
+            alert('Veuillez d\'abord entrer le nom du produit');
+            return;
+        }
+        const timestamp = Date.now();
+        const random = Math.random().toString(36).substring(2, 9);
+        qrCode = `DJIW-${name.toUpperCase().replace(/\s+/g, '-').substring(0, 10)}-${timestamp}-${random}`;
+        document.getElementById('productQrCode').value = qrCode;
+    }
+    
+    if (qrCode) {
+        generateQRCodeDisplay(qrCode);
+    } else {
+        alert('Impossible de générer le QR code. Veuillez entrer un code ou un nom de produit.');
+    }
+}
+
+// Fonction pour afficher le QR code
+function generateQRCodeDisplay(qrCode) {
+    if (!qrCode || qrCode.trim() === '') {
+        console.warn('QR code vide, impossible de générer');
+        return;
+    }
+    
+    const canvas = document.getElementById('qrCodeCanvas');
+    if (!canvas) {
+        console.error('qrCodeCanvas introuvable');
+        return;
+    }
+    
+    canvas.innerHTML = '';
+    
+    // Vérifier que QRCode est disponible avec plusieurs tentatives
+    let qrCodeLib = null;
+    if (typeof QRCode !== 'undefined') {
+        qrCodeLib = QRCode;
+    } else if (typeof window.QRCode !== 'undefined') {
+        qrCodeLib = window.QRCode;
+    } else if (typeof window.QRCodeLib !== 'undefined') {
+        qrCodeLib = window.QRCodeLib;
+    } else if (typeof qrcode !== 'undefined') {
+        // qrcode-generator library
+        qrCodeLib = {
+            toCanvas: function(canvas, text, options, callback) {
+                try {
+                    const typeNumber = 4;
+                    const errorCorrectionLevel = 'M';
+                    const qr = qrcode(typeNumber, errorCorrectionLevel);
+                    qr.addData(text);
+                    qr.make();
+                    const ctx = canvas.getContext('2d');
+                    const moduleCount = qr.getModuleCount();
+                    const cellSize = Math.floor(options.width / moduleCount);
+                    const size = cellSize * moduleCount;
+                    canvas.width = size;
+                    canvas.height = size;
+                    ctx.fillStyle = options.color.light;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = options.color.dark;
+                    for (let row = 0; row < moduleCount; row++) {
+                        for (let col = 0; col < moduleCount; col++) {
+                            if (qr.isDark(row, col)) {
+                                ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+                            }
+                        }
+                    }
+                    if (callback) callback(null);
+                } catch (e) {
+                    if (callback) callback(e);
+                }
+            }
+        };
+    }
+    
+    if (!qrCodeLib) {
+        console.error('Bibliothèque QRCode non chargée');
+        // Utiliser une API en ligne comme fallback
+        const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrCode)}`;
+        canvas.innerHTML = `<img src="${qrApiUrl}" alt="QR Code" style="max-width: 250px; height: auto; border: 2px solid #E0E0E0; border-radius: 8px;">`;
+        document.getElementById('qrCodePreview').style.display = 'block';
+        console.log('✅ QR code généré via API en ligne');
+        return;
+    }
+    
+    // Créer un canvas pour le QR code
+    const canvasElement = document.createElement('canvas');
+    canvas.appendChild(canvasElement);
+    
+    try {
+        qrCodeLib.toCanvas(canvasElement, qrCode, {
+            width: 250,
+            margin: 2,
+            color: {
+                dark: '#000000',
+                light: '#FFFFFF'
+            }
+        }, function (error) {
+            if (error) {
+                console.error('Erreur génération QR code:', error);
+                // Fallback vers API en ligne
+                const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrCode)}`;
+                canvas.innerHTML = `<img src="${qrApiUrl}" alt="QR Code" style="max-width: 250px; height: auto; border: 2px solid #E0E0E0; border-radius: 8px;">`;
+                document.getElementById('qrCodePreview').style.display = 'block';
+                console.log('✅ QR code généré via API en ligne (fallback)');
+            } else {
+                document.getElementById('qrCodePreview').style.display = 'block';
+                console.log('✅ QR code généré avec succès:', qrCode);
+            }
+        });
+    } catch (e) {
+        console.error('Exception lors de la génération QR code:', e);
+        // Fallback vers API en ligne
+        const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrCode)}`;
+        canvas.innerHTML = `<img src="${qrApiUrl}" alt="QR Code" style="max-width: 250px; height: auto; border: 2px solid #E0E0E0; border-radius: 8px;">`;
+        document.getElementById('qrCodePreview').style.display = 'block';
+        console.log('✅ QR code généré via API en ligne (exception fallback)');
+    }
+}
+
+// Fonction pour télécharger le QR code
+function downloadQRCode() {
+    const canvas = document.querySelector('#qrCodeCanvas canvas');
+    if (!canvas) {
+        alert('Générez d\'abord le QR code en cliquant sur "Générer"');
+        return;
+    }
+    
+    const qrCode = document.getElementById('productQrCode').value;
+    const productName = document.getElementById('productName').value || 'Produit';
+    const fileName = `QR-${productName.replace(/\s+/g, '-')}-${qrCode}.png`;
+    
+    const link = document.createElement('a');
+    link.download = fileName;
+    link.href = canvas.toDataURL('image/png');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    console.log('✅ QR code téléchargé:', fileName);
+}
+
+// Fonction pour imprimer le QR code
+function printQRCode() {
+    const canvas = document.querySelector('#qrCodeCanvas canvas');
+    const img = document.querySelector('#qrCodeCanvas img');
+    
+    if (!canvas && !img) {
+        alert('Générez d\'abord le QR code');
+        return;
+    }
+    
+    const printWindow = window.open('', '_blank');
+    const qrCode = document.getElementById('productQrCode').value;
+    const productName = document.getElementById('productName').value || 'Produit';
+    
+    let qrImageSrc = '';
+    if (canvas) {
+        qrImageSrc = canvas.toDataURL('image/png');
+    } else if (img) {
+        qrImageSrc = img.src;
+    }
+    
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>QR Code - ${productName}</title>
+                <style>
+                    body {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        height: 100vh;
+                        margin: 0;
+                        font-family: Arial, sans-serif;
+                    }
+                    h2 { margin-bottom: 20px; }
+                    img { border: 2px solid #000; max-width: 300px; }
+                    p { margin-top: 20px; font-size: 14px; }
+                </style>
+            </head>
+            <body>
+                <h2>${productName}</h2>
+                <img src="${qrImageSrc}" alt="QR Code">
+                <p>Code: ${qrCode}</p>
+                <p>DjiwCertTech - Traçabilité</p>
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+}
+
 console.log('✅ Fonctions de stock exportées:', {
     loadStock: typeof window.loadStock,
     openAddProductModal: typeof window.openAddProductModal,
     editProduct: typeof window.editProduct,
     deleteProduct: typeof window.deleteProduct,
     closeProductModal: typeof window.closeProductModal,
-    saveProduct: typeof window.saveProduct
+    saveProduct: typeof window.saveProduct,
+    generateQRCode: typeof window.generateQRCode,
+    downloadQRCode: typeof window.downloadQRCode,
+    printQRCode: typeof window.printQRCode
 });

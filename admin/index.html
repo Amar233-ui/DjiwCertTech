@@ -542,6 +542,36 @@
                         </label>
                     </div>
                     
+                    <hr style="margin: 20px 0; border: none; border-top: 2px solid #E0E0E0;">
+                    <h3 style="margin-bottom: 15px; color: var(--primary-green);">Code QR de Traçabilité</h3>
+                    
+                    <div class="form-group">
+                        <label for="productQrCode">Code QR (généré automatiquement si vide)</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="text" id="productQrCode" placeholder="Laissé vide pour génération automatique" style="flex: 1;">
+                            <button type="button" class="btn btn-secondary" onclick="generateQRCode()" style="white-space: nowrap;">
+                                <i class="fas fa-qrcode"></i> Générer
+                            </button>
+                        </div>
+                        <div id="qrCodePreview" style="margin-top: 15px; display: none;">
+                            <div style="text-align: center; padding: 20px; background: #f5f5f5; border-radius: 8px; border: 2px solid #E0E0E0;">
+                                <p style="margin-bottom: 15px; font-weight: bold; color: var(--primary-green);">Code QR de Traçabilité</p>
+                                <div id="qrCodeCanvas" style="display: inline-block; margin-bottom: 15px; padding: 10px; background: white; border-radius: 8px;"></div>
+                                <div style="margin-top: 15px;">
+                                    <button type="button" class="btn btn-primary" onclick="downloadQRCode()" style="margin-right: 10px;">
+                                        <i class="fas fa-download"></i> Télécharger QR Code
+                                    </button>
+                                    <button type="button" class="btn btn-primary" onclick="printQRCode()">
+                                        <i class="fas fa-print"></i> Imprimer
+                                    </button>
+                                </div>
+                                <p style="margin-top: 10px; font-size: 12px; color: #666;">
+                                    Scannez ce code pour vérifier la traçabilité du produit
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <input type="hidden" id="productId">
                 </form>
             </div>
@@ -682,6 +712,21 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     
+    <!-- QR Code Library (chargé AVANT stock.js qui l'utilise) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        // Vérifier que QRCode est chargé
+        window.addEventListener('load', function() {
+            if (typeof QRCode !== 'undefined') {
+                console.log('✅ QRCode chargé (qrcodejs)');
+                window.QRCodeLib = QRCode;
+            } else {
+                console.warn('⚠️ QRCode non disponible - Utilisation de l\'API en ligne comme fallback');
+                // On utilisera l'API en ligne comme fallback dans generateQRCodeDisplay
+            }
+        });
+    </script>
+    
     <!-- Scripts (chargés dans l'ordre) -->
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
@@ -695,6 +740,32 @@
     <script src="js/users.js"></script>
     <script src="js/statistics.js"></script>
     <script src="js/main.js"></script>
+    
+    <script>
+        // Vérifier que QRCode est chargé
+        window.addEventListener('load', function() {
+            if (typeof QRCode !== 'undefined') {
+                console.log('✅ Bibliothèque QRCode chargée et disponible');
+                window.QRCodeLib = QRCode;
+            } else {
+                console.warn('⚠️ QRCode non disponible, tentative de chargement alternatif...');
+                // Essayer un CDN alternatif
+                const script = document.createElement('script');
+                script.src = 'https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js';
+                script.onload = function() {
+                    console.log('✅ Bibliothèque QRCode chargée depuis unpkg');
+                    if (typeof QRCode !== 'undefined') {
+                        window.QRCodeLib = QRCode;
+                    }
+                };
+                script.onerror = function() {
+                    console.error('❌ Impossible de charger QRCode depuis unpkg');
+                    alert('Erreur: Impossible de charger la bibliothèque QRCode. Vérifiez votre connexion internet et rechargez la page.');
+                };
+                document.head.appendChild(script);
+            }
+        });
+    </script>
 </body>
 </html>
 

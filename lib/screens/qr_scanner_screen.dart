@@ -56,27 +56,38 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Produit trouvé'),
+          title: Row(
+            children: [
+              const Icon(Icons.verified, color: AppTheme.primaryGreen),
+              const SizedBox(width: 8),
+              const Text('Informations de Traçabilité'),
+            ],
+          ),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Nom: ${product.name}'),
-                const SizedBox(height: 8),
-                Text('Origine: ${product.origin ?? "N/A"}'),
-                if (product.certificationNumber != null) ...[
-                  const SizedBox(height: 8),
-                  Text('Certification: ${product.certificationNumber}'),
-                ],
-                if (product.producerName != null) ...[
-                  const SizedBox(height: 8),
-                  Text('Producteur: ${product.producerName}'),
-                ],
-                if (product.packagingDate != null) ...[
-                  const SizedBox(height: 8),
-                  Text('Date conditionnement: ${product.packagingDate!.day}/${product.packagingDate!.month}/${product.packagingDate!.year}'),
-                ],
+                _buildInfoRow('Nom du produit', product.name),
+                if (product.origin != null && product.origin!.isNotEmpty)
+                  _buildInfoRow('Origine', product.origin!),
+                if (product.certificationNumber != null && product.certificationNumber!.isNotEmpty)
+                  _buildInfoRow('Numéro de certification', product.certificationNumber!),
+                if (product.producerName != null && product.producerName!.isNotEmpty)
+                  _buildInfoRow('Producteur', product.producerName!),
+                if (product.producerId != null && product.producerId!.isNotEmpty)
+                  _buildInfoRow('ID Producteur', product.producerId!),
+                if (product.packagingDate != null)
+                  _buildInfoRow('Date de conditionnement', 
+                    '${product.packagingDate!.day}/${product.packagingDate!.month}/${product.packagingDate!.year}'),
+                if (product.packagingLocation != null && product.packagingLocation!.isNotEmpty)
+                  _buildInfoRow('Lieu de conditionnement', product.packagingLocation!),
+                if (product.season != null && product.season!.isNotEmpty)
+                  _buildInfoRow('Saison', product.season!),
+                if (product.agroEcologicalZone != null && product.agroEcologicalZone!.isNotEmpty)
+                  _buildInfoRow('Zone agro-écologique', product.agroEcologicalZone!),
+                if (product.qrCode != null && product.qrCode!.isNotEmpty)
+                  _buildInfoRow('Code QR', product.qrCode!),
               ],
             ),
           ),
@@ -89,7 +100,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
                   _scannedCode = null;
                 });
               },
-              child: const Text('OK'),
+              child: const Text('Fermer'),
             ),
           ],
         ),
@@ -184,6 +195,34 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
                 ),
               ),
             ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12,
+              color: AppTheme.textSecondary,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 16,
+              color: AppTheme.textPrimary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );
