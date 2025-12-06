@@ -81,11 +81,41 @@ ${context != null ? 'Contexte supplémentaire: $context' : ''}
       } else {
         final errorBody = response.body;
         debugPrint('Gemini API error ${response.statusCode}: $errorBody');
-        throw Exception('Erreur API: ${response.statusCode} - $errorBody');
+        
+        // Gestion spécifique de l'erreur 403
+        if (response.statusCode == 403) {
+          try {
+            final errorData = json.decode(errorBody);
+            final errorMessage = errorData['error']?['message'] ?? errorBody;
+            debugPrint('Erreur 403 Gemini: $errorMessage');
+            
+            if (errorMessage.contains('API key') || errorMessage.contains('permission')) {
+              return 'Erreur d\'authentification API Gemini. Veuillez vérifier votre clé API dans les paramètres de l\'application.';
+            } else if (errorMessage.contains('billing') || errorMessage.contains('quota')) {
+              return 'Quota API dépassé ou facturation non activée. Veuillez vérifier votre compte Google Cloud.';
+            }
+          } catch (_) {
+            // Si le parsing JSON échoue, continuer avec le message générique
+          }
+          
+          return 'Accès refusé à l\'API Gemini (403). Vérifiez que votre clé API est valide et que l\'API est activée dans Google Cloud Console.';
+        }
+        
+        // Autres erreurs HTTP
+        return 'Erreur API Gemini (${response.statusCode}). Veuillez réessayer plus tard.';
       }
     } catch (e) {
       debugPrint('Gemini service error: $e');
-      return 'Désolé, une erreur s\'est produite: ${e.toString()}';
+      
+      // Messages d'erreur plus conviviaux
+      final errorString = e.toString().toLowerCase();
+      if (errorString.contains('socket') || errorString.contains('network')) {
+        return 'Erreur de connexion. Vérifiez votre connexion internet.';
+      } else if (errorString.contains('timeout')) {
+        return 'Le service met trop de temps à répondre. Veuillez réessayer.';
+      }
+      
+      return 'Désolé, une erreur s\'est produite. Veuillez réessayer.';
     }
   }
 

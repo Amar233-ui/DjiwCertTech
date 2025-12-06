@@ -45,5 +45,10 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- Permissions pour la localisation -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Cette application a besoin de votre localisation pour afficher la météo et vous fournir des recommandations personnalisées selon votre région.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Cette application a besoin de votre localisation pour afficher la météo et vous fournir des recommandations personnalisées selon votre région.</string>
 </dict>
 </plist>
